@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://rozpreet.github.io/cozy-heirloom/sitemap.xml
