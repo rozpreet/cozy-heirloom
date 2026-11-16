@@ -525,6 +525,58 @@
             </button>
         </form>
     </section>
+    <!-- 5B. BIRTHDAY GIFT REMINDER CLUB -->
+    <section id="birthday-reminder" class="page-section">
+        <div class="section-heading">
+            <span class="eyebrow-pill">NEVER MISS A SPECIAL DAY</span>
+            <h2>Birthday Gift Reminder Club 🎂</h2>
+            <p>Save your loved one's birthday! We’ll remind you 7 days before so you have plenty of time to customise a handmade crochet bouquet or keepsake.</p>
+        </div>
+
+        <form id="cozy-reminder-form" class="order-card" action="https://formspree.io" method="POST">
+            <input type="hidden" name="form_type" value="🎂 BIRTHDAY REMINDER REQUEST">
+
+            <div class="form-row two-col">
+                <div class="form-group">
+                    <label for="rem-name">Your Name *</label>
+                    <input type="text" id="rem-name" name="sender_name" placeholder="e.g., Simran" required>
+                </div>
+                <div class="form-group">
+                    <label for="rem-phone">Your WhatsApp Number *</label>
+                    <input type="tel" id="rem-phone" name="whatsapp_number" placeholder="+91 XXXXX XXXXX" required>
+                </div>
+            </div>
+
+            <div class="form-row two-col">
+                <div class="form-group">
+                    <label for="rem-loved-one">Loved One's Name & Relation *</label>
+                    <input type="text" id="rem-loved-one" name="loved_one" placeholder="e.g., Rohan (Boyfriend / Brother / Friend)" required>
+                </div>
+                <div class="form-group">
+                    <label for="rem-bday">Their Birthday Date *</label>
+                    <input type="date" id="rem-bday" name="birthday_date" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="rem-gift">Gift Idea They'd Love</label>
+                <select id="rem-gift" name="gift_idea">
+                    <option value="He Deserves Flowers Too (₹1,299)">He Deserves Flowers Too — ₹1,299</option>
+                    <option value="Little Love (₹599)">Little Love — ₹599</option>
+                    <option value="A Little Extra Love (₹999)">A Little Extra Love — ₹999</option>
+                    <option value="Forever Treasured (₹2,999+)">Forever Treasured — ₹2,999+</option>
+                    <option value="Crochet Flower Bouquet (₹449+)">Crochet Flower Bouquet — ₹449+</option>
+                    <option value="Custom Keepsake Magazine (₹449+)">Custom Keepsake Magazine — ₹449+</option>
+                    <option value="Granny Square Bag / Cardigan">Granny Square Bag / Cardigan</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-primary full-width">
+                Save Birthday Reminder + Add to Calendar 🎂
+            </button>
+        </form>
+    </section>
+
 <!-- 6. FAQ & INSTAGRAM -->
     <section id="faq" class="page-section">
         <div class="section-heading">
@@ -563,6 +615,39 @@
     <p>Handcrafted with love by <strong>Rozpreet</strong> in Punjab, India 🧶✨</p>
     <p>© 2026 Cozy Heirloom • Slow-Made Crochet Gifts & Keepsakes</p>
 </footer>
+<script>
+document.getElementById('cozy-reminder-form').addEventListener('submit', function() {
+    const lovedOne = document.getElementById('rem-loved-one').value.trim();
+    const bdayInput = document.getElementById('rem-bday').value;
+    const gift = document.getElementById('rem-gift').value;
+
+    if (!bdayInput) return;
+
+    const today = new Date();
+    const bday = new Date(bdayInput);
+    let nextBday = new Date(today.getFullYear(), bday.getMonth(), bday.getDate());
+    if (nextBday < today) {
+        nextBday.setFullYear(today.getFullYear() + 1);
+    }
+    const reminderDate = new Date(nextBday);
+    reminderDate.setDate(nextBday.getDate() - 7);
+
+    const yyyy = reminderDate.getFullYear();
+    const mm = String(reminderDate.getMonth() + 1).padStart(2, '0');
+    const dd = String(reminderDate.getDate()).padStart(2, '0');
+    const calDate = `${yyyy}${mm}${dd}`;
+
+    const eventTitle = encodeURIComponent(`🎁 Order Birthday Gift for ${lovedOne} (Cozy Heirloom)`);
+    const eventDetails = encodeURIComponent(
+        `Reminder: ${lovedOne}'s birthday is in 7 days!\n` +
+        `Gift Idea: ${gift}\n` +
+        `Order here: https://github.io\n` +
+        `Instagram: @rozpreet_`
+    );
+    const calendarUrl = `https://google.com{eventTitle}&dates=${calDate}/${calDate}&details=${eventDetails}`;
+    window.open(calendarUrl, '_blank');
+});
+</script>
 
 </body>
 </html>
