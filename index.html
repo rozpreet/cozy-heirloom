@@ -533,7 +533,7 @@
             <p>Save your loved one's birthday! We’ll remind you 7 days before so you have plenty of time to customise a handmade crochet bouquet or keepsake.</p>
         </div>
 
-        <form id="cozy-reminder-form" class="order-card" action="https://formspree.io" method="POST">
+        <form id="cozy-reminder-form" class="order-card" action="https://formspree.io/f/myewkvql" method="POST">
             <input type="hidden" name="form_type" value="🎂 BIRTHDAY REMINDER REQUEST">
 
             <div class="form-row two-col">
@@ -616,40 +616,70 @@
     <p>© 2026 Cozy Heirloom • Slow-Made Crochet Gifts & Keepsakes</p>
 </footer>
 <script>
-document.getElementById('cozy-reminder-form').addEventListener('submit', function() {
-    const lovedOne = document.getElementById('rem-loved-one').value.trim();
-    const bdayInput = document.getElementById('rem-bday').value;
-    const gift = document.getElementById('rem-gift').value;
+document.addEventListener('DOMContentLoaded', function() {
+    const reminderForm = document.getElementById('cozy-reminder-form');
+    if (!reminderForm) return;
 
-    if (!bdayInput) return;
+    reminderForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
 
-    const today = new Date();
-    const bday = new Date(bdayInput);
-    let nextBday = new Date(today.getFullYear(), bday.getMonth(), bday.getDate());
-    if (nextBday < today) {
-        nextBday.setFullYear(today.getFullYear() + 1);
-    }
-    const reminderDate = new Date(nextBday);
-    reminderDate.setDate(nextBday.getDate() - 7);
+        const btn = reminderForm.querySelector('button[type="submit"]');
+        const originalText = btn.textContent;
+        btn.textContent = "Saving Reminder... ⏳";
+        btn.disabled = true;
 
-    const yyyy = reminderDate.getFullYear();
-    const mm = String(reminderDate.getMonth() + 1).padStart(2, '0');
-    const dd = String(reminderDate.getDate()).padStart(2, '0');
-    const calDate = `${yyyy}${mm}${dd}`;
+        const lovedOne = document.getElementById('rem-loved-one').value.trim();
+        const bdayInput = document.getElementById('rem-bday').value;
+        const gift = document.getElementById('rem-gift').value;
 
-    const eventTitle = encodeURIComponent(`🎁 Order Birthday Gift for ${lovedOne} (Cozy Heirloom)`);
-    const eventDetails = encodeURIComponent(
-        `Reminder: ${lovedOne}'s birthday is in 7 days!\n` +
-        `Gift Idea: ${gift}\n` +
-        `Order here: https://github.io\n` +
-        `Instagram: @rozpreet_`
-    );
-    const calendarUrl = `https://google.com{eventTitle}&dates=${calDate}/${calDate}&details=${eventDetails}`;
-    window.open(calendarUrl, '_blank');
+        try {
+            const response = await fetch("https://formspree.io/f/myewkvql", {
+                method: "POST",
+                body: new FormData(reminderForm),
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            if (response.ok) {
+                const today = new Date();
+                const bday = new Date(bdayInput);
+                let nextBday = new Date(today.getFullYear(), bday.getMonth(), bday.getDate());
+                if (nextBday < today) {
+                    nextBday.setFullYear(today.getFullYear() + 1);
+                }
+                const reminderDate = new Date(nextBday);
+                reminderDate.setDate(nextBday.getDate() - 7);
+
+                const yyyy = reminderDate.getFullYear();
+                const mm = String(reminderDate.getMonth() + 1).padStart(2, '0');
+                const dd = String(reminderDate.getDate()).padStart(2, '0');
+                const calDate = `${yyyy}${mm}${dd}`;
+
+                const eventTitle = encodeURIComponent(`🎁 Order Birthday Gift for ${lovedOne} (Cozy Heirloom)`);
+                const eventDetails = encodeURIComponent(
+                    `Reminder: ${lovedOne}'s birthday is in 7 days!\n` +
+                    `Gift Idea: ${gift}\n` +
+                    `Order here: https://rozpreet.github.io/cozy-heirloom/ this
+                    `Instagram: @rozpreet_`
+                );
+                const calendarUrl = `https://google.com{eventTitle}&dates=${calDate}/${calDate}&details=${eventDetails}`;
+                window.open(calendarUrl, '_blank');
+
+                btn.textContent = "Reminder Saved! 🎉";
+                reminderForm.reset();
+            } else {
+                btn.textContent = "Please try again ⚠️";
+            }
+        } catch (error) {
+            btn.textContent = "Network error — try again ⚠️";
+        }
+
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.disabled = false;
+        }, 4000);
+    });
 });
 </script>
-
-</body>
-</html>
-
-
